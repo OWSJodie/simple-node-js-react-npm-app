@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage ('Checkout') {
             steps {
-                git branch:'master', url: 'https://github.com/OWASP/Vulnerable-Web-Application.git'
+                git branch:'master', url: 'https://github.com/OWSJodie/simple-node-js-react-npm-app.git'
             }
         }
         
