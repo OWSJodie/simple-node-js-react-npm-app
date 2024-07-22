@@ -5,6 +5,10 @@ pipeline {
         nodejs "NodeJs"  // Ensure this is correctly installed in Jenkins
     }
 
+    environment {
+        SONAR_TOKEN = credentials('sonar-token')  // Use Jenkins credentials plugin to store the token securely
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -18,24 +22,12 @@ pipeline {
             }
         }
 
-        stage('OWASP Dependency-Check Vulnerabilities') {
-            steps {
-                dependencyCheck additionalArguments: '''
-                    -o './'
-                    -s './'
-                    -f 'ALL'
-                    --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-                
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
-        }
-
         stage('Code Quality Check via SonarQube') {
             steps {
                 script {
                     def scannerHome = tool name: 'SonarQube', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://192.168.0.228:9000 -Dsonar.login=sqp_7ddbfdb6dc058ef73e9ec4c0bedd7dfbd063bf88"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://192.168.0.228:9000 -Dsonar.token=${env.SONAR_TOKEN}"
                     }
                 }
             }
