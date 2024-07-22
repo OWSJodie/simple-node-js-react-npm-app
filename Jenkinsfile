@@ -4,11 +4,6 @@ pipeline {
     tools {
         nodejs "NodeJs"  // Ensure this is correctly installed in Jenkins
     }
-
-    environment {
-        SONAR_TOKEN = credentials('sonar-token')  // Use Jenkins credentials plugin to store the token securely
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -27,7 +22,7 @@ pipeline {
                 script {
                     def scannerHome = tool name: 'SonarQube', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://192.168.0.228:9000 -Dsonar.token=${env.SONAR_TOKEN}"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -Dsonar.sources=. -Dsonar.host.url=http://192.168.0.228:9000 -Dsonar.token=sqp_7ddbfdb6dc058ef73e9ec4c0bedd7dfbd063bf88"
                     }
                 }
             }
